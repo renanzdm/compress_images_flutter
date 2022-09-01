@@ -79,8 +79,8 @@ class _MyAppState extends State<MyApp> {
                     },
                     child: const Text("Galery Photo")),
                 Text(
-                    'Foto reduzida ${photoLengthCompressed.toStringAsFixed(4)} mb'),
-                Text('Foto normal ${photoLengthNormal.toStringAsFixed(4)} mb'),
+                    'Compressed Photo ${photoLengthCompressed.toStringAsFixed(4)} mb'),
+                Text('Normal Photo ${photoLengthNormal.toStringAsFixed(4)} mb'),
                 if (compressedPhoto != null) Image.file(compressedPhoto!),
                 if (newPhoto != null) Image.file(newPhoto!),
               ],

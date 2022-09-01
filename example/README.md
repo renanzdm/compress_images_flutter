@@ -1,16 +1,13 @@
-# compress_images_flutter_example
+## Add import
+```import 'package:compress_images_flutter/compress_images_flutter.dart';```
 
-Demonstrates how to use the compress_images_flutter plugin.
+## Create instance of Lib 
+```final CompressImagesFlutter compressImagesFlutter = CompressImagesFlutter();```
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Call with a path your image, the quality parameter if not informed the default will be 70
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+File? compressedPhoto = await compressImagesFlutter
+                          .compressImage(photo!.path, quality: 30);
+```
