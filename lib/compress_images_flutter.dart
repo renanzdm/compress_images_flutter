@@ -7,13 +7,12 @@ class CompressImagesFlutter {
     return CompressImagesFlutterPlatform.instance.getPlatformVersion();
   }
 
-  Future<File?> compressImage(String fileName, {int percentage = 70, int quality = 70, int targetWidth = 0, int targetHeight = 0}) async {
+  Future<File?> compressImage(String fileName, {int quality = 70}) async {
     final String? pathFile = await CompressImagesFlutterPlatform.instance
-        .compressImage(fileName, quality: quality, percentage: percentage, targetHeight: targetHeight, targetWidth: targetWidth);
+        .compressImage(fileName, quality: quality);
     if (pathFile != null) {
       return File(pathFile);
     }
-
     return null;
   }
 }

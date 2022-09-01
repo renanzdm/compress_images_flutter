@@ -19,9 +19,6 @@ public class SwiftCompressImagesFlutterPlugin: NSObject, FlutterPlugin{
       if(call.method == "compress_image"){
           let fileExtension : String = ".jpg"
           let qualityArgument:Int = _arguments?["quality"] as? Int ?? 100;
-          let percentageArgument:Int =  _arguments?["percentage"] as? Int ?? 70;
-          let widthArgument:Int = _arguments?["targetWidth"] as? Int ?? 800;
-          let heightArgument:Int = _arguments?["targetHeight"] as? Int ?? 800;
           let fileArgument:String  = _arguments?["file"] as? String  ??  "";
           let uncompressedFileUrl = URL(string: fileArgument) ;
           let fileName:String  = uncompressedFileUrl?.deletingPathExtension().path as? String ?? ""
@@ -36,18 +33,15 @@ public class SwiftCompressImagesFlutterPlugin: NSObject, FlutterPlugin{
           if(img != nil){
               let uiImage: Data? =  compressImage(image: img!,quality:Double(qualityArgument) * 0.01)
               if(uiImage != nil){
-                  let pathImage = FileManager().createFile(atPath: tempFileName, contents: uiImage , attributes: nil)
-                  result(tempFileName)
+                  let succes = FileManager().createFile(atPath: tempFileName, contents: uiImage , attributes: nil)
+                  if(succes){
+                    result(tempFileName)
+                  }
+         
               }
           }
           
       }
-      
-      
-      
-  
-      
-      
       
   }
     
@@ -56,21 +50,6 @@ public class SwiftCompressImagesFlutterPlugin: NSObject, FlutterPlugin{
         return image
             
     }
-  
-    
-    
-    
-    	
+   	
 }
 
-extension UIImage {
-    func aspectFittedToHeight(_ newHeight: CGFloat) -> UIImage {
-        let scale = newHeight / self.size.height
-        let newWidth = self.size.width * scale
-        let newSize = CGSize(width: newWidth, height: newHeight)
-        let renderer = UIGraphicsImageRenderer(size: newSize)
-        return renderer.image { _ in
-            self.draw(in: CGRect(origin: .zero, size: newSize))
-        }
-    }
-}

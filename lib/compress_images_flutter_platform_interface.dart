@@ -8,7 +8,8 @@ abstract class CompressImagesFlutterPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static CompressImagesFlutterPlatform _instance = MethodChannelCompressImagesFlutter();
+  static CompressImagesFlutterPlatform _instance =
+      MethodChannelCompressImagesFlutter();
 
   /// The default instance of [CompressImagesFlutterPlatform] to use.
   ///
@@ -27,7 +28,7 @@ abstract class CompressImagesFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<String?> compressImage(String fileName, {int percentage = 70, int quality = 70, int targetWidth = 0, int targetHeight = 0}) {
+  Future<String?> compressImage(String fileName, {int quality = 70}) {
     throw UnimplementedError('compressImage() has not been implemented.');
   }
 }

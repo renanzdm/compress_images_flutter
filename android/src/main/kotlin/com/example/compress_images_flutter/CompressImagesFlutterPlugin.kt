@@ -39,13 +39,8 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
     private fun compressImage(call: MethodCall, result: Result) {
         val fileName: String = call.argument<String>("file")!!
-        val resizePercentage: Int = call.argument<Int>("percentage")!!
-        val targetWidth: Int =
-            if (call.argument<Int>("targetWidth") == null) 0 else call.argument<Int>("targetWidth")!!
-        val targetHeight: Int =
-            if (call.argument<Int>("targetHeight") == null) 0 else call.argument<Int>("targetHeight")!!
         val quality: Int = call.argument<Int>("quality")!!
-        ////////
+
         val file = File(fileName)
         if (!file.exists()) {
             result.error("Arquivo nao existe", fileName, null)
@@ -53,14 +48,10 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
         }
         var bitmap = BitmapFactory.decodeFile(fileName)
         val output = ByteArrayOutputStream()
-
-        val newWidth = if (targetWidth == 0) bitmap.width / 100 * resizePercentage else targetWidth
-        val newHeight = if (targetHeight == 0) bitmap.height / 100 * resizePercentage else targetHeight
         bitmap = Bitmap.createScaledBitmap(
-            bitmap, newWidth, newHeight, true
+            bitmap, bitmap.width, bitmap.height, true
         )
         val newBmp = bitmap.copy(Bitmap.Config.RGB_565, false)
-
         CoroutineScope(context = Dispatchers.IO).launch {
             newBmp.compress(CompressFormat.JPEG, quality, output)
             withContext(Dispatchers.Main){
