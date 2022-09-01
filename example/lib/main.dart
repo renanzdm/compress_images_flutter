@@ -40,13 +40,20 @@ class _MyAppState extends State<MyApp> {
             children: [
               TextButton(
                   onPressed: () async {
-                    photo = await _picker.pickImage(source: ImageSource.camera, maxWidth: 1600);
+                    photo = await _picker.pickImage(
+                        source: ImageSource.gallery, maxWidth: 1600);
                     newPhoto = File(photo!.path);
-                    compressedPhoto = await compressImagesFlutter.compressImage(photo!.path, quality: 70);
-                    photoLength = (((compressedPhoto!.readAsBytesSync().lengthInBytes) * 1.0) / 1024) / 1024;
+                    compressedPhoto = await compressImagesFlutter
+                        .compressImage(photo!.path, quality: 90);
+                    photoLength =
+                        (((compressedPhoto!.readAsBytesSync().lengthInBytes) *
+                                    1.0) /
+                                1024) /
+                            1024;
                     setState(() {});
                   },
-                  child: Text("Take Photo ${photoLength.toStringAsFixed(2)} mb")),
+                  child:
+                      Text("Take Photo ${photoLength.toStringAsFixed(2)} mb")),
               if (compressedPhoto != null) Image.file(compressedPhoto!),
             ],
           ),
