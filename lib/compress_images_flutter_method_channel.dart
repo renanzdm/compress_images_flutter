@@ -11,14 +11,15 @@ class MethodChannelCompressImagesFlutter extends CompressImagesFlutterPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
 
   @override
-  Future<String?> compressImage(String fileName, {int percentage = 70, int quality = 70, int targetWidth = 0, int targetHeight = 0}) async {
+  Future<String?> compressImage(String fileName, {int quality = 70}) async {
     final String? path = await methodChannel.invokeMethod<String>(
-        'compress_image', {'file': fileName, 'quality': quality, 'percentage': percentage, 'targetWidth': targetWidth, 'targetHeight': targetHeight});
+        'compress_image', {'file': fileName, 'quality': quality});
     return path;
   }
 }

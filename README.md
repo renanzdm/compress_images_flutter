@@ -1,15 +1,16 @@
-# compress_images_flutter
+## Add import
+```import 'package:compress_images_flutter/compress_images_flutter.dart';```
 
-A new Flutter project.
+## Create instance of Lib 
+```final CompressImagesFlutter compressImagesFlutter = CompressImagesFlutter();```
 
-## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+## Call with a path your image, the quality parameter if not informed the default will be 70
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+File? compressedPhoto = await compressImagesFlutter
+                          .compressImage(photo!.path, quality: 30);
+```
+
+![alt text](https://github.com/renanzdm/compress_images_flutter/blob/master/simulator_screenshot_B9992740-087D-4658-A5ED-A8DE26E48C49.png?raw=true)
 

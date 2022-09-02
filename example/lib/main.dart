@@ -42,26 +42,45 @@ class _MyAppState extends State<MyApp> {
               children: [
                 TextButton(
                     onPressed: () async {
-                      photo = await _picker.pickImage(source: ImageSource.camera, maxWidth: 1600);
+                      photo = await _picker.pickImage(
+                          source: ImageSource.camera, maxWidth: 1600);
                       newPhoto = File(photo!.path);
-                      compressedPhoto = await compressImagesFlutter.compressImage(photo!.path, quality: 70);
-                      photoLengthCompressed = (((compressedPhoto!.readAsBytesSync().lengthInBytes) * 1.0) / 1024) / 1024;
-                      photoLengthNormal = (((newPhoto!.readAsBytesSync().lengthInBytes) * 1.0) / 1024) / 1024;
+                      compressedPhoto = await compressImagesFlutter
+                          .compressImage(photo!.path, quality: 30);
+                      photoLengthCompressed =
+                          (((compressedPhoto!.readAsBytesSync().lengthInBytes) *
+                                      1.0) /
+                                  1024) /
+                              1024;
+                      photoLengthNormal =
+                          (((newPhoto!.readAsBytesSync().lengthInBytes) * 1.0) /
+                                  1024) /
+                              1024;
                       setState(() {});
                     },
                     child: const Text("Take Photo")),
                 TextButton(
                     onPressed: () async {
-                      photo = await _picker.pickImage(source: ImageSource.gallery, maxWidth: 1600);
+                      photo = await _picker.pickImage(
+                          source: ImageSource.gallery, maxWidth: 1600);
                       newPhoto = File(photo!.path);
-                      compressedPhoto = await compressImagesFlutter.compressImage(photo!.path, quality: 70);
-                      photoLengthCompressed = (((compressedPhoto!.readAsBytesSync().lengthInBytes) * 1.0) / 1024) / 1024;
-                      photoLengthNormal = (((newPhoto!.readAsBytesSync().lengthInBytes) * 1.0) / 1024) / 1024;
+                      compressedPhoto = await compressImagesFlutter
+                          .compressImage(photo!.path, quality: 30);
+                      photoLengthCompressed =
+                          (((compressedPhoto!.readAsBytesSync().lengthInBytes) *
+                                      1.0) /
+                                  1024) /
+                              1024;
+                      photoLengthNormal =
+                          (((newPhoto!.readAsBytesSync().lengthInBytes) * 1.0) /
+                                  1024) /
+                              1024;
                       setState(() {});
                     },
                     child: const Text("Galery Photo")),
-                Text('Foto reduzida ${photoLengthCompressed.toStringAsFixed(2)} mb'),
-                Text('Foto normal ${photoLengthNormal.toStringAsFixed(2)} mb'),
+                Text(
+                    'Compressed Photo ${photoLengthCompressed.toStringAsFixed(4)} mb'),
+                Text('Normal Photo ${photoLengthNormal.toStringAsFixed(4)} mb'),
                 if (compressedPhoto != null) Image.file(compressedPhoto!),
                 if (newPhoto != null) Image.file(newPhoto!),
               ],
