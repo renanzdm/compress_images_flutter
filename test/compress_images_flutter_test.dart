@@ -19,6 +19,12 @@ class MockCompressImagesFlutterPlatform
     // TODO: implement compressImage
     throw UnimplementedError();
   }
+
+  @override
+  Future<String> rotateImage(String fileName) {
+    // TODO: implement rotateImage
+    throw UnimplementedError();
+  }
 }
 
 void main() {
