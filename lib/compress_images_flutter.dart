@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'compress_images_flutter_platform_interface.dart';
 
@@ -14,5 +15,9 @@ class CompressImagesFlutter {
       return File(pathFile);
     }
     return null;
+  }
+
+  Future<String> rotateImage(String filePath) async {
+   return await CompressImagesFlutterPlatform.instance.rotateImage(filePath);
   }
 }

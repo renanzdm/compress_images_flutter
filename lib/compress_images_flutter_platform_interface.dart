@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'compress_images_flutter_method_channel.dart';
@@ -31,4 +33,9 @@ abstract class CompressImagesFlutterPlatform extends PlatformInterface {
   Future<String?> compressImage(String fileName, {int quality = 70}) {
     throw UnimplementedError('compressImage() has not been implemented.');
   }
+  Future<String> rotateImage(String fileName) {
+    throw UnimplementedError('rotateImage() has not been implemented.');
+  }
+
+
 }

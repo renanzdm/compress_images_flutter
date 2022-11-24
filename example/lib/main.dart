@@ -25,11 +25,6 @@ class _MyAppState extends State<MyApp> {
   File? compressedPhoto;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
@@ -40,6 +35,15 @@ class _MyAppState extends State<MyApp> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                TextButton(
+                    onPressed: () async {
+                     await compressImagesFlutter
+                          .rotateImage(compressedPhoto!.path);
+                      imageCache.clearLiveImages();
+                      imageCache.clear();
+                      setState(() {});
+                    },
+                    child: const Text('Rotate')),
                 TextButton(
                     onPressed: () async {
                       photo = await _picker.pickImage(
@@ -81,7 +85,14 @@ class _MyAppState extends State<MyApp> {
                 Text(
                     'Compressed Photo ${photoLengthCompressed.toStringAsFixed(4)} mb'),
                 Text('Normal Photo ${photoLengthNormal.toStringAsFixed(4)} mb'),
-                if (compressedPhoto != null) Image.file(compressedPhoto!),
+                if (compressedPhoto != null)
+                  Image.file(
+                    compressedPhoto!,
+                    key:UniqueKey(),
+                  ),
+                const SizedBox(
+                  height: 20.0,
+                ),
                 if (newPhoto != null) Image.file(newPhoto!),
               ],
             ),

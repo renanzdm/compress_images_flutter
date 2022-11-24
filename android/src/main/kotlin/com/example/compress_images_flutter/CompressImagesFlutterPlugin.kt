@@ -3,6 +3,7 @@ package com.example.compress_images_flutter
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import androidx.annotation.NonNull
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -27,7 +28,8 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
-            "compress_image" ->compressImage(call,result)
+            "compress_image" -> compressImage(call, result)
+            "rotate_image" -> rotateImage(call, result)
         }
 
     }
@@ -40,39 +42,48 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
     private fun compressImage(call: MethodCall, result: Result) {
         val fileName: String = call.argument<String>("file")!!
         val quality: Int = call.argument<Int>("quality")!!
+        var error = ""
+
+//        val outputFileName: String = File.createTempFile(getFilenameWithoutExtension("file"),".jpg").path
+
 
         val file = File(fileName)
         if (!file.exists()) {
             result.error("Arquivo nao existe", fileName, null)
             return
         }
-        var bitmap = BitmapFactory.decodeFile(fileName)
+        val bitmap = BitmapFactory.decodeFile(fileName)
         val output = ByteArrayOutputStream()
-        bitmap = Bitmap.createScaledBitmap(
+        Bitmap.createScaledBitmap(
             bitmap, bitmap.width, bitmap.height, true
         )
-        val newBmp = bitmap.copy(Bitmap.Config.RGB_565, false)
-        CoroutineScope(context = Dispatchers.IO).launch {
-            newBmp.compress(CompressFormat.JPEG, quality, output)
-            withContext(Dispatchers.Main){
+        CoroutineScope(context = Dispatchers.Main).launch {
+            bitmap.compress(CompressFormat.JPEG, quality, output)
+            withContext(Dispatchers.IO) {
                 try {
-                    val outputFileName: String = File.createTempFile(getFilenameWithoutExtension(file),".jpg").path
-                    val outputStream: OutputStream = FileOutputStream(outputFileName)
+                    val outputStream: OutputStream = FileOutputStream(fileName)
                     output.writeTo(outputStream)
-                    result.success(outputFileName)
+                    outputStream.flush()
+                    outputStream.close()
                 } catch (e: FileNotFoundException) {
+                    error = e.message.toString()
                     e.printStackTrace()
-                    result.error("Arquivo Inexistente", fileName, e.printStackTrace())
                 } catch (e: IOException) {
+                    error = e.message.toString()
                     e.printStackTrace()
-                    result.error("Error desconhecido", fileName, e.printStackTrace())
                 }
 
+            }
+            if (error.isNotBlank()) {
+                result.error("", "", error)
+            } else {
+                result.success(fileName)
             }
 
         }
 
     }
+
     private fun getFilenameWithoutExtension(file: File): String {
         val fileName = file.name
         return if (fileName.indexOf(".") > 0) {
@@ -80,6 +91,32 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
         } else {
             fileName
         }
+    }
+
+
+    private fun rotateImage(call: MethodCall, result: Result) {
+        val fileName: String = call.argument<String>("file")!!
+        val bitmap = BitmapFactory.decodeFile(fileName)
+        val output = ByteArrayOutputStream()
+        val rotation = Matrix()
+        rotation.postRotate(90f)
+        val bitmapRotate = Bitmap.createBitmap(
+            bitmap, 0, 0, bitmap.width, bitmap.height, rotation, true
+        )
+        CoroutineScope(context = Dispatchers.Main).launch {
+            withContext(Dispatchers.IO) {
+                val outputStream: OutputStream = FileOutputStream(fileName)
+                bitmapRotate.compress(CompressFormat.JPEG, 100, output)
+                output.writeTo(outputStream)
+                outputStream.flush()
+                outputStream.close()
+            }
+//            val outputFileName: String =
+//                File.createTempFile(getFilenameWithoutExtension(File(fileName)), "rotate.jpg").path
+            result.success(fileName)
+        }
+
+
     }
 
 

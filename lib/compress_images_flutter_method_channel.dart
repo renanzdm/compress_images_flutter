@@ -22,4 +22,13 @@ class MethodChannelCompressImagesFlutter extends CompressImagesFlutterPlatform {
         'compress_image', {'file': fileName, 'quality': quality});
     return path;
   }
+
+  @override
+  Future<String> rotateImage(String fileName) async{
+   var filePath =  await methodChannel.invokeMethod<String?>(
+        'rotate_image', {'file': fileName});
+
+   return filePath ?? '';
+  }
+
 }
