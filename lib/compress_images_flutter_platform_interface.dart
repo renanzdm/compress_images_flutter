@@ -33,7 +33,7 @@ abstract class CompressImagesFlutterPlatform extends PlatformInterface {
   Future<String?> compressImage(String fileName, {int quality = 70}) {
     throw UnimplementedError('compressImage() has not been implemented.');
   }
-  Future<String> rotateImage(String fileName) {
+  Future<String> rotateImage(String fileName,{required double degree }) {
     throw UnimplementedError('rotateImage() has not been implemented.');
   }
 

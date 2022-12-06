@@ -96,10 +96,11 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
     private fun rotateImage(call: MethodCall, result: Result) {
         val fileName: String = call.argument<String>("file")!!
+        val degree : Double = call.argument<Double>("degree")!!
         val bitmap = BitmapFactory.decodeFile(fileName)
         val output = ByteArrayOutputStream()
         val rotation = Matrix()
-        rotation.postRotate(90f)
+        rotation.postRotate(degree.toFloat())
         val bitmapRotate = Bitmap.createBitmap(
             bitmap, 0, 0, bitmap.width, bitmap.height, rotation, true
         )
@@ -111,12 +112,8 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
                 outputStream.flush()
                 outputStream.close()
             }
-//            val outputFileName: String =
-//                File.createTempFile(getFilenameWithoutExtension(File(fileName)), "rotate.jpg").path
             result.success(fileName)
         }
-
-
     }
 
 

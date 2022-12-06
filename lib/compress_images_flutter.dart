@@ -17,7 +17,7 @@ class CompressImagesFlutter {
     return null;
   }
 
-  Future<String> rotateImage(String filePath) async {
-   return await CompressImagesFlutterPlatform.instance.rotateImage(filePath);
+  Future<String> rotateImage(String filePath, {double degree = 90}) async {
+   return await CompressImagesFlutterPlatform.instance.rotateImage(filePath,degree: degree);
   }
 }

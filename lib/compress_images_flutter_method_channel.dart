@@ -24,10 +24,9 @@ class MethodChannelCompressImagesFlutter extends CompressImagesFlutterPlatform {
   }
 
   @override
-  Future<String> rotateImage(String fileName) async{
+  Future<String> rotateImage(String fileName,{required double degree}) async{
    var filePath =  await methodChannel.invokeMethod<String?>(
-        'rotate_image', {'file': fileName});
-
+        'rotate_image', {'file': fileName,'degree':degree});
    return filePath ?? '';
   }
 
