@@ -81,6 +81,14 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
                     ExifInterface.TAG_ORIENTATION,
                     exifOld.getAttribute(ExifInterface.TAG_ORIENTATION)
                 )
+                ExifInterface(fileName).setAttribute(
+                    ExifInterface.TAG_IMAGE_WIDTH,
+                    exifOld.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
+                )
+                ExifInterface(fileName).setAttribute(
+                    ExifInterface.TAG_IMAGE_LENGTH,
+                    exifOld.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
+                )
                 result.success(fileName)
             }
 
@@ -112,6 +120,18 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
             ExifInterface(fileName).setAttribute(
                 ExifInterface.TAG_ORIENTATION,
                 exifOld.getAttribute(ExifInterface.TAG_ORIENTATION)
+            )
+            ExifInterface(fileName).setAttribute(
+                ExifInterface.TAG_ORIENTATION,
+                exifOld.getAttribute(ExifInterface.TAG_ORIENTATION)
+            )
+            ExifInterface(fileName).setAttribute(
+                ExifInterface.TAG_IMAGE_WIDTH,
+                exifOld.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
+            )
+            ExifInterface(fileName).setAttribute(
+                ExifInterface.TAG_IMAGE_LENGTH,
+                exifOld.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
             )
             result.success(fileName)
         }
