@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.media.ExifInterface
 import androidx.annotation.NonNull
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -43,8 +44,7 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
         val fileName: String = call.argument<String>("file")!!
         val quality: Int = call.argument<Int>("quality")!!
         var error = ""
-
-//        val outputFileName: String = File.createTempFile(getFilenameWithoutExtension("file"),".jpg").path
+        val exifOld = ExifInterface(fileName)
 
 
         val file = File(fileName)
@@ -77,6 +77,10 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
             if (error.isNotBlank()) {
                 result.error("", "", error)
             } else {
+                ExifInterface(fileName).setAttribute(
+                    ExifInterface.TAG_ORIENTATION,
+                    exifOld.getAttribute(ExifInterface.TAG_ORIENTATION)
+                )
                 result.success(fileName)
             }
 
@@ -84,19 +88,12 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
     }
 
-    private fun getFilenameWithoutExtension(file: File): String {
-        val fileName = file.name
-        return if (fileName.indexOf(".") > 0) {
-            fileName.substring(0, fileName.lastIndexOf("."))
-        } else {
-            fileName
-        }
-    }
 
 
     private fun rotateImage(call: MethodCall, result: Result) {
         val fileName: String = call.argument<String>("file")!!
-        val degree : Double = call.argument<Double>("degree")!!
+        val degree: Double = call.argument<Double>("degree")!!
+        val exifOld = ExifInterface(fileName)
         val bitmap = BitmapFactory.decodeFile(fileName)
         val output = ByteArrayOutputStream()
         val rotation = Matrix()
@@ -112,6 +109,10 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
                 outputStream.flush()
                 outputStream.close()
             }
+            ExifInterface(fileName).setAttribute(
+                ExifInterface.TAG_ORIENTATION,
+                exifOld.getAttribute(ExifInterface.TAG_ORIENTATION)
+            )
             result.success(fileName)
         }
     }
