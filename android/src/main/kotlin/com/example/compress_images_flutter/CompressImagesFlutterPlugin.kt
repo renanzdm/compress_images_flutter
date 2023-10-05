@@ -5,8 +5,6 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
-import androidx.annotation.NonNull
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -20,14 +18,15 @@ import java.io.*
 
 class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var channel: MethodChannel
-    val CHANNEL_NAME: String = "compress_images_flutter"
+    private val channelName: String = "compress_images_flutter"
+    private val mainScope: CoroutineScope = CoroutineScope(context = Dispatchers.Main)
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME)
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, channelName)
         channel.setMethodCallHandler(this)
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
             "compress_image" -> compressImage(call, result)
             "rotate_image" -> rotateImage(call, result)
@@ -35,7 +34,7 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
 
     }
@@ -43,8 +42,8 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
     private fun compressImage(call: MethodCall, result: Result) {
         val fileName: String = call.argument<String>("file")!!
         val quality: Int = call.argument<Int>("quality")!!
-        var error = ""
-        val exifOld = ExifInterface(fileName)
+        var error: String? = null
+        val oldExif = ExifInterface(fileName)
 
 
         val file = File(fileName)
@@ -57,7 +56,7 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
         Bitmap.createScaledBitmap(
             bitmap, bitmap.width, bitmap.height, true
         )
-        CoroutineScope(context = Dispatchers.Main).launch {
+        mainScope.launch {
             bitmap.compress(CompressFormat.JPEG, quality, output)
             withContext(Dispatchers.IO) {
                 try {
@@ -74,28 +73,21 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
                 }
 
             }
-            if (error.isNotBlank()) {
+            if (error != null) {
                 result.error("", "", error)
             } else {
-                ExifInterface(fileName).setAttribute(
+                val newExif = ExifInterface(fileName)
+                newExif.setAttribute(
                     ExifInterface.TAG_ORIENTATION,
-                    exifOld.getAttribute(ExifInterface.TAG_ORIENTATION)
+                    oldExif.getAttribute(ExifInterface.TAG_ORIENTATION)
                 )
-                ExifInterface(fileName).setAttribute(
-                    ExifInterface.TAG_IMAGE_WIDTH,
-                    exifOld.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
-                )
-                ExifInterface(fileName).setAttribute(
-                    ExifInterface.TAG_IMAGE_LENGTH,
-                    exifOld.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
-                )
+                newExif.saveAttributes()
                 result.success(fileName)
             }
 
         }
 
     }
-
 
 
     private fun rotateImage(call: MethodCall, result: Result) {
@@ -109,7 +101,7 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
         val bitmapRotate = Bitmap.createBitmap(
             bitmap, 0, 0, bitmap.width, bitmap.height, rotation, true
         )
-        CoroutineScope(context = Dispatchers.Main).launch {
+        mainScope.launch {
             withContext(Dispatchers.IO) {
                 val outputStream: OutputStream = FileOutputStream(fileName)
                 bitmapRotate.compress(CompressFormat.JPEG, 100, output)
@@ -117,22 +109,6 @@ class CompressImagesFlutterPlugin : FlutterPlugin, MethodCallHandler {
                 outputStream.flush()
                 outputStream.close()
             }
-            ExifInterface(fileName).setAttribute(
-                ExifInterface.TAG_ORIENTATION,
-                exifOld.getAttribute(ExifInterface.TAG_ORIENTATION)
-            )
-            ExifInterface(fileName).setAttribute(
-                ExifInterface.TAG_ORIENTATION,
-                exifOld.getAttribute(ExifInterface.TAG_ORIENTATION)
-            )
-            ExifInterface(fileName).setAttribute(
-                ExifInterface.TAG_IMAGE_WIDTH,
-                exifOld.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
-            )
-            ExifInterface(fileName).setAttribute(
-                ExifInterface.TAG_IMAGE_LENGTH,
-                exifOld.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
-            )
             result.success(fileName)
         }
     }
