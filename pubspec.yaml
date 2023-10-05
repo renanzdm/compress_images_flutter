@@ -1,6 +1,6 @@
 name: compress_images_flutter
 description: Plugin flutter for compress images using your path in memory device, functional in Ios and Android Platforms.
-version: 0.0.3+8
+version: 0.0.3+9
 homepage: https://github.com/renanzdm/compress_images_flutter
 environment:
   sdk: ">=2.16.2 <3.0.0"
